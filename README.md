@@ -2,5 +2,6 @@
  🦀 Algorithms implemented in rust :D 
 
 ## Pattern Matching
-[ ] LZW - Text
-[ ] Huffman - Text
+[] LZW - Text
+
+[] Huffman - Text
