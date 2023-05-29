@@ -2,8 +2,17 @@
  🦀 Algorithms implemented in rust :D 
 
 ## Compression
-[] LZW - Text
 
-[] Huffman - Text
+- 🏃‍♀️ [Run-length encoding](Compression/RLE)
+- [ ] LZ77
+- [ ] LZ78
+- [ ] LZW
+- [ ] LZSS
+- [ ] Huffman
 
 ## Pattern Matching
+- [ ] KMP
+- [ ] Boyer Moore
+- [ ] Aho Corasick
+- [ ] Shift-and
+- [ ] Levenshtein Distance
