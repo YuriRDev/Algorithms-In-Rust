@@ -16,3 +16,7 @@
 - [ ] Aho Corasick
 - [ ] Shift-and
 - [ ] Levenshtein Distance
+
+## Graphs
+- [ ] Breadth-First
+- [ ] Dijkstra
