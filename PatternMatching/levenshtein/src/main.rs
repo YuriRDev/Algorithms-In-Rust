@@ -1,9 +1,10 @@
+use comfy_table::Table;
 use levenshtein::Levensthain;
 
 fn main() {
-    let mut distance = Levensthain::new("denyam", "ephref");
+    let source = "I'm12 super cool";
+    let target = "I'm super coo34l";
+    let mut distance = Levensthain::new(target, source);
     let value = distance.run();
-    
-    distance.print_grid();
-    println!("{value}");
+    println!("Distance is: {value}");
 }
