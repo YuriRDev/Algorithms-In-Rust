@@ -15,7 +15,7 @@
 - [ ] Boyer Moore
 - [ ] Aho Corasick
 - [ ] Shift-and
-- [ ] Levenshtein Distance
+- 📏 [Levenshtein Distance](PatternMatching/levenshtein)
 
 ## Graphs
 - [ ] Breadth-First
