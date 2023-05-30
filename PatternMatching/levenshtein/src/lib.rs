@@ -1,3 +1,5 @@
+use std::ops::Index;
+
 pub struct Levensthain {
     grid: Vec<Vec<i32>>,
     source: Vec<char>,
@@ -5,35 +7,37 @@ pub struct Levensthain {
     size: usize,
 }
 
+/// Constructor
 impl Levensthain {
     pub fn new(source: &str, target: &str) -> Levensthain {
+        let size = if source.len() > target.len() {
+            source.len()
+        } else {
+            target.len()
+        };
+
+        let (source_fill, target_fill) = fill_str(&source, &target);
+
         Levensthain {
             grid: Vec::new(),
-            source: string_to_chars(&source),
-            target: string_to_chars(&target),
-            size: if source.len() > target.len() {
-                source.len()
-            } else {
-                target.len()
-            },
+            source: string_to_chars(&source_fill.to_string()),
+            target: string_to_chars(&target_fill.to_string()),
+            size,
         }
     }
 }
 
-/// #####
 /// Public
-/// #####
 impl Levensthain {
-    pub fn run(&mut self) -> i32{
+    pub fn run(&mut self) -> i32 {
         self.start();
         self.fill_grid();
 
         self.get_distance_value()
     }
 }
-/// #####
+
 /// Private (Inside calculations)
-/// #####
 impl Levensthain {
     fn start(&mut self) {
         let mut grid_tmp: Vec<Vec<i32>> = Vec::new();
@@ -58,6 +62,7 @@ impl Levensthain {
             self.fill_row(row);
         }
     }
+
     fn fill_row(&mut self, row: usize) {
         println!("Preenchendo fileira: {row}");
 
@@ -82,11 +87,17 @@ impl Levensthain {
         self.grid[row].push(*answer);
     }
 
+    fn get_distance_value(&self) -> i32 {
+        self.grid[self.size][self.size]
+    }
+}
+
+/// Current pos possibel values
+impl Levensthain {
     fn check_upper(&self, pos: (usize, usize)) -> i32 {
         let (row, column) = pos;
 
         let value = self.grid[row - 1][column];
-        println!("Upper de ({},{}) = {value}", row, column);
 
         value + 1
     }
@@ -95,7 +106,6 @@ impl Levensthain {
         let (row, column) = pos;
 
         let value = &self.grid[row][column - 1];
-        println!("LEFT de ({},{}) = {value}", row, column);
 
         value + 1
     }
@@ -123,15 +133,9 @@ impl Levensthain {
 
         self.source[row - 1] == self.target[column - 1]
     }
-
-    fn get_distance_value(&self) -> i32 {
-        self.grid[self.size][self.size]
-    }
 }
 
-/// #####
 /// Debug (Inside calculations)
-/// #####
 impl Levensthain {
     pub fn print_biggest_size(&self) {
         println!("{}", &self.size);
@@ -154,4 +158,21 @@ fn string_to_chars(value: &str) -> Vec<char> {
     }
 
     chars
+}
+
+fn fill_str(str1: &str, str2: &str) -> (String, String) {
+    let mut str1_parsed = String::from(str1);
+    let mut str2_parsed = String::from(str2);
+
+    for cnt in str1.len()..str2.len() {
+        let char_to_add = (str2.as_bytes()[cnt] + 1) as char;
+        str1_parsed.push(char_to_add);
+    }
+
+    for cnt in str2.len()..str1.len() {
+        let char_to_add = (str1.as_bytes()[cnt] + 1) as char;
+        str2_parsed.push(char_to_add);
+    }
+
+    (str1_parsed, str2_parsed)
 }
