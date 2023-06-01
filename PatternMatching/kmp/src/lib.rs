@@ -1,3 +1,5 @@
+use std::io::ErrorKind;
+
 pub struct Kmp {
     text: String,
     target: String,
@@ -12,6 +14,38 @@ impl Kmp {
             target: String::from(target),
             transition: get_fail_transition(target),
         }
+    }
+
+    /// ### Search the first occurency of the pattern on the text
+    /// When found, it'll return an tupple of usizes (usize,usize)
+    /// 
+    /// That means where it found it (first_index, last_index)
+    /// 
+    /// **It's an inclusive and continuos**
+    /// 
+    pub fn search_first(&self) -> Result<(usize, usize), &str> {
+        let mut index_pattern = 0;
+
+        'outer: for i in 0..self.text.len() {
+            let text_char = self.text.as_bytes()[i];
+            let mut pattern_char = self.target.as_bytes()[index_pattern];
+
+            while text_char != pattern_char {
+                if index_pattern == 0 {
+                    continue 'outer;
+                }
+                index_pattern = self.transition[index_pattern - 1];
+                pattern_char = self.target.as_bytes()[index_pattern];
+            }
+
+            if index_pattern == self.target.len() - 1 {
+                return Ok((i - index_pattern, i));
+            }
+
+            index_pattern += 1;
+        }
+
+        Err("Nao foi possivel encontrar o resultado")
     }
 }
 
