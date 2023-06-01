@@ -1,3 +1,8 @@
+# 📏 Levenshtein Distance
+*String-metric* algorithm that measures the difference between two strings.
+
+### 📃 Example
+```rust
 use levenshtein::Levensthain;
 
 fn main() {
@@ -10,3 +15,9 @@ fn main() {
     distance.print_grid();
     
 }
+
+
+```
+
+### 👻 To-do
+- [ ]  Use comfy_table to print the grid more User friendly

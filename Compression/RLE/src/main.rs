@@ -1,9 +1,13 @@
 use RLE::compress_rle;
 
 fn main() {
-    let text = "AAAAABBBBBBCCCCCCCCDD000000000LLLBCC";
+    let to_compress = "AAAAABBBBBBCCCCCCCCDD000000000LLLBCC";
 
-    let compressed = compress_rle(text);
-    println!("{compressed}");
-    // println!("{}", decompres_rle(compressed));
+    // Compress
+    println!("{}", compress_rle(to_compress));
+
+
+    // decompress
+    // I forgot to change that haha, wait a few days :D
+    // println!("{}", decompres_rle("5A6B8C2D903L1B2C"));
 }
