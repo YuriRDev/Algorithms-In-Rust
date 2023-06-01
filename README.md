@@ -11,7 +11,7 @@
 - [ ] Huffman
 
 ## Pattern Matching
-- [ ] KMP
+- 👾 [KMP (*Knuth–Morris–Pratt*)](PatternMatching/kmp)
 - [ ] Boyer Moore
 - [ ] Aho Corasick
 - [ ] Shift-and
