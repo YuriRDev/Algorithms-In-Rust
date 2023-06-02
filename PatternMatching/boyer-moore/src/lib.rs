@@ -10,11 +10,29 @@ pub struct BoyerMoore {
 impl BoyerMoore {
     /// ### "Constructor"
     /// You may initialize the BoyerMoore algorithm from here.
+    /// ### Pattern length must be <= text length
     pub fn new(pattern: &str, text: &str) -> BoyerMoore {
+        if pattern.len() > text.len() {
+            panic!("The pattern length must be less or equal than text length ");
+        }
+
         BoyerMoore {
             pattern: pattern.to_string(),
             text: text.to_string(),
             bad_prefix_hash: generate_bad_prefix_hash(pattern),
+        }
+    }
+}
+
+// Private methods
+impl BoyerMoore {
+    pub fn bad_prefix_search(&self, index: usize) -> usize {
+        let first_char = self.text.as_bytes()[index] as char;
+        let last = self.text.as_bytes()[index + self.pattern.len() - 1] as char;
+
+        match self.bad_prefix_hash.get(&last) {
+            Some(value) => value.to_owned() ,
+            None => self.pattern.len(),
         }
     }
 }
@@ -24,6 +42,13 @@ impl BoyerMoore {
     /// Prints the **bad prefix** hash table
     pub fn print_bad_prefix_hash(&self) {
         println!("{:?}", self.bad_prefix_hash);
+    }
+
+    /// debug only
+    pub fn get_index_char(&self, index: usize) {
+        let first_char = self.text.as_bytes()[index] as char;
+
+        println!("{}", first_char);
     }
 }
 
