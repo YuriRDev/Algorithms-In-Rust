@@ -11,8 +11,8 @@ impl Lz78 {
     /// The text **should be** a to-compress or to-decompress.
     ///
     /// For compression there's no input validation.
-    /// 
-    /// In the other hand, for the decompression method there's a input validation. 
+    ///
+    /// In the other hand, for the decompression method there's a input validation.
     /// **Text must be a number followed by a character**
     ///
     /// ---
@@ -84,6 +84,19 @@ impl Lz78 {
         compacted_string
     }
 
+    pub fn decompact(&self) -> Result<String, &str> {
+        if validate_decompact_string(&self.text) == false {
+            return Err(
+                "Invalid decompact string format \nMust be `number``char``number``char``...
+            ",
+            );
+        }
+
+        let mut decompact_str = String::new();
+
+        Ok(decompact_str)
+    }
+
     pub fn print_table(&self) {
         println!("{:?}", self.dictionary);
     }
@@ -109,6 +122,23 @@ impl Lz78 {
         let dictionary_len = self.dictionary.len();
         self.dictionary.insert(prefix.to_string(), dictionary_len);
     }
+}
+
+/// Check if the text string is valid for decompress.
+///
+/// String must be ```numeric,char,numeric,char``` to be valid as "to_decompact" string
+fn validate_decompact_string(value: &str) -> bool {
+    for cnt in 0..value.len() {
+        let character = value.as_bytes()[cnt] as char;
+
+        if cnt % 2 == 0 {
+            if !character.is_numeric() {
+                return false;
+            }
+        }
+    }
+
+    true
 }
 
 #[cfg(test)]
