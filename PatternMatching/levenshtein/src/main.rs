@@ -1,7 +1,7 @@
 use levenshtein::Levensthain;
 
 fn main() {
-    let mut distance = Levensthain::new("I'm super cool", "I'm just cool");
+    let mut distance = Levensthain::new("araraquara", "araraquara");
     let value = distance.run();
     println!("Distance is: {value}");
 
