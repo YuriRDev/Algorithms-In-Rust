@@ -1,7 +1,6 @@
 pub struct Vigenere {
     text: String,
     key: String,
-    key_stream: String,
 }
 
 // Constructor
@@ -13,7 +12,6 @@ impl Vigenere {
         Vigenere {
             text: text.to_uppercase().to_string(),
             key: key.to_uppercase().to_string(),
-            key_stream: generate_key_stream(&text.to_uppercase(), &key.to_uppercase()),
         }
     }
 }
@@ -24,9 +22,8 @@ impl Vigenere {
         let mut return_string = String::new();
 
         for cnt in 0..self.text.len() {
-            let pos1 = self.text.as_bytes()[cnt] as char;
-            let pos2 = self.key_stream.as_bytes()[cnt] as char;
-
+            let pos1 = self.text.as_bytes()[cnt];
+            let pos2 = self.key.as_bytes()[cnt % self.key.len()];
             return_string.push(get_pos_value(pos1, pos2));
         }
 
@@ -34,22 +31,11 @@ impl Vigenere {
     }
 }
 
-fn get_pos_value(pos1: char, pos2: char) -> char {
+fn get_pos_value(pos1: u8, pos2: u8) -> char {
     // Some crazy math, but trust me, it makes sense
-    let pos_as_bytes = (pos1.to_string().as_bytes()[0] + pos2.to_string().as_bytes()[0]) % 26 + 65;
+    let pos_as_bytes = (pos1 + pos2) % 26 + 65;
 
     pos_as_bytes as char
-}
-
-/// Will remove it later
-fn generate_key_stream(text: &str, key: &str) -> String {
-    let mut return_string = String::new();
-    for i in 0..text.len() {
-        let key_char = key.as_bytes()[i % key.len()] as char;
-        return_string.push(key_char);
-    }
-
-    return_string
 }
 
 fn validate_input(text: &str) {
