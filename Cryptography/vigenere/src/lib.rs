@@ -24,16 +24,44 @@ impl Vigenere {
         for cnt in 0..self.text.len() {
             let pos1 = self.text.as_bytes()[cnt];
             let pos2 = self.key.as_bytes()[cnt % self.key.len()];
-            return_string.push(get_pos_value(pos1, pos2));
+            // return_string.push(get_pos_value_crypt(pos1, pos2));
+            return_string.push(get_pos_value_decrypt(pos1, pos2));
         }
 
         return_string
     }
 }
 
-fn get_pos_value(pos1: u8, pos2: u8) -> char {
+fn get_pos_value_crypt(pos1: u8, pos2: u8) -> char {
     // Some crazy math, but trust me, it makes sense
     let pos_as_bytes = (pos1 + pos2) % 26 + 65;
+    println!(
+        "{} {} = {}",
+        pos1 as char, pos2 as char, pos_as_bytes as char
+    );
+
+    pos_as_bytes as char
+}
+
+fn get_pos_value_decrypt(pos1: u8, pos2: u8) -> char {
+    // Some crazy math, but trust me, it makes sense
+    let pos_as_bytes = (pos1 + pos2) % 26 + 65;
+
+    let distance = if pos1 > pos2 {
+        pos1 - pos2
+    } else {
+        pos2 - pos1
+    };
+
+    println!("{} - {} = {}", pos2 , pos1, distance);
+
+    // println!("{} + {} = {} ",pos2, distance, distance);
+
+    // println!("{} {} = {}", pos2, pos1, pos_as_bytes);
+    // println!(
+        // "{} {} = {}",
+        // pos2 as char, pos1 as char, pos_as_bytes as char
+    // );
 
     pos_as_bytes as char
 }
