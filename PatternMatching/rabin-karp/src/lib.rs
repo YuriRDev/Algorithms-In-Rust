@@ -14,6 +14,12 @@ impl RabinKarp {
     }
 }
 
+impl RabinKarp {
+    fn roll_hash() {
+        
+    }
+}
+
 
 pub fn generate_hash(character: char,) {
     
