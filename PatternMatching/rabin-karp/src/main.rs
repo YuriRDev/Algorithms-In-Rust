@@ -1,3 +1,6 @@
+use rabin_karp::RabinKarp;
+
 fn main() {
-    println!("Hello, world!");
+    let a = RabinKarp::new("jkl", "abcdefghijklmnop");
+    a.print();
 }
