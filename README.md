@@ -14,6 +14,7 @@
 - 👾 [KMP (*Knuth–Morris–Pratt*)](PatternMatching/kmp)
 - [ ] Boyer Moore
 - [ ] Aho Corasick
+- [ ] FLPM (*First-Last pattern matching*)
 - 🛡 [Shift And](PatternMatching/shift-and)
 - 📏 [Levenshtein Distance](PatternMatching/levenshtein)
 
