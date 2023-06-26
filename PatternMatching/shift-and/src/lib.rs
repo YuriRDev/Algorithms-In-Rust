@@ -5,7 +5,6 @@ pub struct ShiftAnd<'s> {
     pattern: &'s str,
     text: &'s str,
     mask: HashMap<char, Vec<bool>>,
-    window: Vec<(usize, usize)>,
 }
 
 /// Constructor
@@ -15,33 +14,46 @@ impl<'s> ShiftAnd<'s> {
             pattern,
             text,
             mask: generate_mask(&pattern),
-            window: Vec::new(),
         }
     }
 }
 
 impl<'s> ShiftAnd<'s> {
-    pub fn search(&mut self) {
+    pub fn search(&mut self) -> Vec<(usize, usize)> {
+        let mut window: Vec<(usize, usize)> = Vec::new();
+
+        // Shift
         let mut current = self.generate_empty_vec();
-        let mut cnt = 0;
-        for character in self.text.chars() {
-            // println!("Current: {:?}", current);
 
-            let character_mask = match self.mask.get(&character) {
-                Some(mask) => mask.to_owned(),
-                None => vec![false; self.pattern.len()],
-            };
+        for cnt in 0..self.text.len() {
+            let character = self.text.as_bytes()[cnt] as char;
 
-            // Current and mask
+            let character_mask = self.get_character_mask(character);
+
+            // And
             let and = vec_and_vec(&current, &character_mask);
-
             if and.get(self.pattern.len() - 1).unwrap() == &true {
-                self.window.push((cnt - self.pattern.len() + 1, cnt + 1));
+                window.push((cnt - self.pattern.len() + 1, cnt));
             }
-            // println!("And: {:?}", and);
 
+            // Shift
             current = shift_vec(&and);
-            cnt += 1;
+        }
+
+        window
+    }
+
+    pub fn print_bit_mask(&self) {
+        for value in self.mask.keys() {
+            print!("{value}: [");
+            for value in self.mask.get(value).unwrap() {
+                if value == &false {
+                    print!("0");
+                } else {
+                    print!("1");
+                }
+            }
+            println!("]");
         }
     }
 }
@@ -52,6 +64,13 @@ impl<'s> ShiftAnd<'s> {
         tmp_vec[0] = true;
 
         tmp_vec
+    }
+
+    fn get_character_mask(&self, character: char) -> Vec<bool> {
+        match self.mask.get(&character) {
+            Some(e) => e.to_vec(),
+            _ => self.generate_empty_vec(),
+        }
     }
 }
 
