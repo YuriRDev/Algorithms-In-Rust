@@ -1,4 +1,4 @@
-use std::io::ErrorKind;
+use std::{io::ErrorKind, collections::HashMap};
 
 pub struct Kmp {
     text: String,

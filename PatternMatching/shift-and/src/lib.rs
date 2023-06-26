@@ -1,26 +1,29 @@
 use std::{collections::HashMap, vec};
 
 // There's not a vector os bits, we can stick with vector of booleans, the theory is that is a bit anyways..
-pub struct ShiftAnd {
-    pattern: String,
-    text: String,
+pub struct ShiftAnd<'s> {
+    pattern: &'s str,
+    text: &'s str,
     mask: HashMap<char, Vec<bool>>,
+    window: Vec<(usize, usize)>,
 }
 
 /// Constructor
-impl ShiftAnd {
-    pub fn new(pattern: &str, text: &str) -> ShiftAnd {
+impl<'s> ShiftAnd<'s> {
+    pub fn new<'a>(pattern: &'a str, text: &'a str) -> ShiftAnd<'a> {
         ShiftAnd {
-            pattern: pattern.to_string(),
-            text: text.to_string(),
+            pattern,
+            text,
             mask: generate_mask(&pattern),
+            window: Vec::new(),
         }
     }
 }
 
-impl ShiftAnd {
-    pub fn search(&self) {
+impl<'s> ShiftAnd<'s> {
+    pub fn search(&mut self) {
         let mut current = self.generate_empty_vec();
+        let mut cnt = 0;
         for character in self.text.chars() {
             // println!("Current: {:?}", current);
 
@@ -29,17 +32,26 @@ impl ShiftAnd {
                 None => vec![false; self.pattern.len()],
             };
 
-            // println!("Mask de {}: {:?}", character, character_mask);
-
             // Current and mask
             let and = vec_and_vec(&current, &character_mask);
+
             if and.get(self.pattern.len() - 1).unwrap() == &true {
-                println!("Encontrou padrao no character");
+                self.window.push((cnt - self.pattern.len() + 1, cnt + 1));
             }
             // println!("And: {:?}", and);
 
             current = shift_vec(&and);
+            cnt += 1;
         }
+    }
+}
+
+impl<'s> ShiftAnd<'s> {
+    fn generate_empty_vec(&self) -> Vec<bool> {
+        let mut tmp_vec = vec![false; self.pattern.len()];
+        tmp_vec[0] = true;
+
+        tmp_vec
     }
 }
 
@@ -87,15 +99,6 @@ fn shift_vec(vec: &Vec<bool>) -> Vec<bool> {
     }
 
     vec_tmp
-}
-
-impl ShiftAnd {
-    fn generate_empty_vec(&self) -> Vec<bool> {
-        let mut tmp_vec = vec![false; self.pattern.len()];
-        tmp_vec[0] = true;
-
-        tmp_vec
-    }
 }
 
 fn vec_and_vec(vec1: &Vec<bool>, vec2: &Vec<bool>) -> Vec<bool> {
