@@ -14,7 +14,7 @@
 - 👾 [KMP (*Knuth–Morris–Pratt*)](PatternMatching/kmp)
 - [ ] Boyer Moore
 - [ ] Aho Corasick
-- [ ] Shift-and
+- 🛡 [Shift And](PatternMatching/shift-and)
 - 📏 [Levenshtein Distance](PatternMatching/levenshtein)
 
 ## Graphs
