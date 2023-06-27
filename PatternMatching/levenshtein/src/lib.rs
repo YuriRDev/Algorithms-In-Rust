@@ -1,49 +1,21 @@
-use comfy_table::Table;
-
-pub struct Levensthain {
+pub struct Levensthain<'s> {
     grid: Vec<Vec<i32>>,
-    source: Vec<char>,
-    target: Vec<char>,
-    size: usize,
+    source: &'s str,
+    target: &'s str,
 }
 
-/// Constructor
-impl Levensthain {
-    /// Configure the Levenshtain stats.
-    /// ### Here, you specify the source and target string 
-    /// *Don't worry, it does **not** matter if you swap the two, the result is the same*
-    /// ```
-    /// let mut distance = Levensthain::new("I'm super cool", "I'm ultra cool");
-    /// let value = distance.run();
-    /// println!("Distance is: {value}");
-    /// ```
-    pub fn new(source: &str, target: &str) -> Levensthain {
-        let size = if source.len() > target.len() {
-            source.len()
-        } else {
-            target.len()
-        };
-
-        let (source_fill, target_fill) = fill_str(&source, &target);
-
+impl<'s> Levensthain<'s> {
+    pub fn new<'a>(source: &'a str, target: &'a str) -> Levensthain<'a> {
         Levensthain {
             grid: Vec::new(),
-            source: string_to_chars(&source_fill.to_string()),
-            target: string_to_chars(&target_fill.to_string()),
-            size,
+            source: &source,
+            target: &target,
         }
     }
 }
 
-/// Public
-impl Levensthain {
-    /// It's time to run the Levenshtain algorithm!
-    /// Just easily type and wait for the return
-    /// ```
-    /// let mut distance = Levensthain::new(source, target);
-    /// let value = distance.run();
-    /// println!("Distance is: {value}");
-    /// ```
+/// Public methods
+impl<'s> Levensthain<'s> {
     pub fn run(&mut self) -> i32 {
         self.start();
         self.fill_grid();
@@ -51,25 +23,27 @@ impl Levensthain {
         self.get_distance_value()
     }
 
-    // To-do
-    pub fn pretty_print(&self) {
-        // TO-DO, using comfy_table
+    pub fn print_grid(&self) {
+        for row in 0..self.grid.len() {
+            println!("{:?}", &self.grid[row]);
+        }
     }
 }
 
-/// Private (Inside calculations)
-impl Levensthain {
+/// Private
+impl<'s> Levensthain<'s> {
     fn start(&mut self) {
         let mut grid_tmp: Vec<Vec<i32>> = Vec::new();
 
         // Create first row
         let mut tmp: Vec<i32> = Vec::new();
-        for value in 0..&self.size + 1 {
+        for value in 0..&self.source.len() + 1 {
             tmp.push(value as i32);
         }
         grid_tmp.push(tmp);
 
-        for value in 1..&self.size + 1 {
+        // preencher colunas
+        for value in 1..&self.target.len() + 1 {
             grid_tmp.push(Vec::from([value as i32]));
         }
 
@@ -78,13 +52,13 @@ impl Levensthain {
 
     fn fill_grid(&mut self) {
         // Preencher fileira 1
-        for row in 1..&self.size + 1 {
+        for row in 1..&self.target.len() + 1 {
             self.fill_row(row);
         }
     }
 
     fn fill_row(&mut self, row: usize) {
-        for count in 1..&self.size + 1 {
+        for count in 1..&self.source.len() + 1 {
             self.get_pos_value((row, count));
         }
     }
@@ -92,27 +66,29 @@ impl Levensthain {
     fn get_pos_value(&mut self, pos: (usize, usize)) {
         let (row, _) = pos;
 
-        // Diagonal, Upper, Left;
-        let possibilities = [
-            self.check_upper(pos),
-            self.check_left(pos),
-            self.check_diagonal(pos),
-        ];
-        // I know, I know... I was lazy
-        let answer = possibilities.iter().min().unwrap();
+        let upper = self.check_upper(pos);
+        let left = self.check_left(pos);
+        let diagonal = self.check_diagonal(pos);
 
-        self.grid[row].push(*answer);
+        let mut answer = upper;
+
+        if left < answer {
+            answer = left;
+        }
+        if diagonal < answer {
+            answer = diagonal;
+        }
+
+        self.grid[row].push(answer);
     }
 
     fn get_distance_value(&self) -> i32 {
-        self.grid[self.size][self.size]
+        self.grid[self.target.len()][self.source.len()]
     }
 }
 
-/// Current pos possibel values
-impl Levensthain {
-    /// Returns the upper cell *(in relation to (row, column)* value
-    /// Literally just return ```grid[row-1][column]```
+/// Border-Grid checker
+impl<'s> Levensthain<'s> {
     fn check_upper(&self, pos: (usize, usize)) -> i32 {
         let (row, column) = pos;
 
@@ -121,8 +97,6 @@ impl Levensthain {
         value + 1
     }
 
-    /// Returns the left cell *(in relation to (row, column)* value
-    ///  ```grid[row][column - 1]```
     fn check_left(&self, pos: (usize, usize)) -> i32 {
         let (row, column) = pos;
 
@@ -131,8 +105,6 @@ impl Levensthain {
         value + 1
     }
 
-    /// Returns the diagonal (top, left) cell *(in relation to (row, column)* value
-    ///  ```grid[row - 1][column - 1]```
     fn check_diagonal(&self, pos: (usize, usize)) -> i32 {
         let (row, column) = pos;
 
@@ -144,70 +116,56 @@ impl Levensthain {
         value + 1
     }
 
-    /// Verify if the char in the relation of row and column are the same
-    /// If so, returns true,
-    /// Else... **I know you can figure it out**
     fn equals_pos(&self, pos: (usize, usize)) -> bool {
         let (row, column) = pos;
 
-        self.source[row - 1] == self.target[column - 1]
-    }
-}
+        let src_len = self.source.as_bytes().len() - 1;
+        let src_mus = column - 1;
 
-/// Debug
-impl Levensthain {
-    /// Prints the biggest string size.
-    /// *It's used to debug, idk why r u reading this
-    pub fn print_biggest_size(&self) {
-        println!("{}", &self.size);
-    }
+        let tgt_len = self.target.as_bytes().len() - 1;
+        let tgt_mus = row - 1;
 
-    /// Print's the grid value formated.
-    /// In the future I plan to use **comfy_tables** to improve
-    /// the visualization
-    pub fn print_grid(&self) {
-        println!("Printing grid!");
-        for row in 0..self.grid.len() {
-            println!("{:?}", &self.grid[row]);
+        if src_mus > src_len {
+            false
+        } else if tgt_mus > tgt_len {
+            false
+        } else {
+            self.source.as_bytes()[column - 1] == self.target.as_bytes()[row - 1]
         }
     }
 }
 
-/// Literally convers a string into a char
-/// ```
-/// let string_value = "Nice";
-/// let chars_arr = string_to_chars(&string_value);
-///
-/// // chars_arr = ['N','i','c','e']
-/// ```
-/// Ngl, I don't know if rust has already this implemented
-fn string_to_chars(value: &str) -> Vec<char> {
-    let mut chars: Vec<char> = Vec::new();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    for ch in value.chars() {
-        chars.push(ch);
+    #[test]
+    fn four_chars() {
+        let mut lev = Levensthain::new("abcd", "bbcd");
+        assert_eq!(lev.run(), 1);
     }
 
-    chars
-}
-
-/// Sometimes between two strings, one is bigger then the other...
-/// I know I could just used a more few if/elses to fix this, but I figured it
-/// that this solution is just a little more expensive to process, but it makes the
-/// program easier *(to write and read)*
-fn fill_str(str1: &str, str2: &str) -> (String, String) {
-    let mut str1_parsed = String::from(str1);
-    let mut str2_parsed = String::from(str2);
-
-    for cnt in str1.len()..str2.len() {
-        let char_to_add = (str2.as_bytes()[cnt] + 1) as char;
-        str1_parsed.push(char_to_add);
+    #[test]
+    fn eight_chars() {
+        let mut lev = Levensthain::new("palekd93", "alekd92");
+        assert_eq!(lev.run(), 2);
+    }
+    
+    #[test]
+    fn sixteen_chars() {
+        let mut lev = Levensthain::new("ak39818@91028172", "ak2910@");
+        assert_eq!(lev.run(), 11);
+    }
+    
+    #[test]
+    fn thirtytwo_chars() {
+        let mut lev = Levensthain::new("9ALDKSJAM.,;A92J#$%1938261KAICOA", "9ALDKSJAMKKLAMCN#$%1@@DLAKSAICOA");
+        assert_eq!(lev.run(), 13);
     }
 
-    for cnt in str2.len()..str1.len() {
-        let char_to_add = (str1.as_bytes()[cnt] + 1) as char;
-        str2_parsed.push(char_to_add);
+    #[test]
+    fn sixtyfour_chars() {
+        let mut lev = Levensthain::new("Nam quis nulla. Integer malesuada. In in enim a arcu imperdiet m", "Nam quis nulla. Nam quis n malesuada enim a arcu imperdiet m");
+        assert_eq!(lev.run(), 17);
     }
-
-    (str1_parsed, str2_parsed)
 }

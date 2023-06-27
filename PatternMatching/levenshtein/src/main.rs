@@ -1,12 +1,9 @@
 use levenshtein::Levensthain;
 
 fn main() {
-    let mut distance = Levensthain::new("araraquara", "araraquara");
+    let mut distance = Levensthain::new("ak39818@91028172", "ak2910@");
     let value = distance.run();
-    println!("Distance is: {value}");
+    println!("Distance is: {}", value);
 
-    // If you wan't to see the grid.
-    // For now you must call this method after the .run()
     distance.print_grid();
-    
 }
