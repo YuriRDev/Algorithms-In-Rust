@@ -8,8 +8,8 @@ impl<'s> Levensthain<'s> {
     pub fn new<'a>(source: &'a str, target: &'a str) -> Levensthain<'a> {
         Levensthain {
             grid: Vec::new(),
-            source: &source,
-            target: &target,
+            source,
+            target,
         }
     }
 }
@@ -125,9 +125,7 @@ impl<'s> Levensthain<'s> {
         let tgt_len = self.target.as_bytes().len() - 1;
         let tgt_mus = row - 1;
 
-        if src_mus > src_len {
-            false
-        } else if tgt_mus > tgt_len {
+        if src_mus > src_len || tgt_mus > tgt_len {
             false
         } else {
             self.source.as_bytes()[column - 1] == self.target.as_bytes()[row - 1]
