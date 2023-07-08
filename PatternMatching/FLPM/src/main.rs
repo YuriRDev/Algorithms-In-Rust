@@ -1,6 +1,8 @@
-use FLPM::Flmp;
+use FLPM::Flpm;
 
 fn main() {
-    let a = Flmp::new("Aranha arranha a arra d aa", "arra").search();
-    println!("{:?}", a);
+    let flpm = Flpm::new("can you can a can as a canner can can a can?", "can");
+    let result = flpm.search();
+    
+    println!("{:?}", result);
 }

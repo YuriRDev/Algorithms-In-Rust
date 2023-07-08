@@ -1,15 +1,15 @@
-pub struct Flmp<'s> {
+pub struct Flpm<'s> {
     text: &'s str,
     pattern: &'s str,
 }
 
-impl<'s> Flmp<'s> {
-    pub fn new<'a>(text: &'a str, pattern: &'a str) -> Flmp<'a> {
-        Flmp { text, pattern }
+impl<'s> Flpm<'s> {
+    pub fn new<'a>(text: &'a str, pattern: &'a str) -> Flpm<'a> {
+        Flpm { text, pattern }
     }
 }
 
-impl<'s> Flmp<'s> {
+impl<'s> Flpm<'s> {
     pub fn search(&self) -> Vec<usize> {
         let window = self.get_window();
         let mut answer: Vec<usize> = Vec::new();
@@ -46,5 +46,28 @@ impl<'s> Flmp<'s> {
         }
 
         window
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn small_test() {
+        let a = Flpm::new("the prince of pride", "pri").search();
+        assert_eq!(a, [4, 14]);
+    }
+
+    #[test]
+    fn medium_test() {
+        let a = Flpm::new("can you can a can as a canner can can a can?", "can").search();
+        assert_eq!(a, [0, 8, 14, 23, 30, 34, 40]);
+    }
+
+    #[test]
+    fn big_test() {
+        let a = Flpm::new("How much wood would a woodchuck chuck if a woodchuck could chuck wood?", "wood").search();
+        assert_eq!(a, [9, 22, 43, 65]);
     }
 }
