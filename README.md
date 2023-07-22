@@ -21,3 +21,6 @@
 ## Graphs
 - [ ] Breadth-First
 - [ ] Dijkstra
+
+## Bogo
+- 😎 [BogoSort (*King*)](Goat/bogosort)
