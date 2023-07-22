@@ -20,4 +20,4 @@ It took: 5866 "randomizations": [2, 3, 4, 5, 10, 17, 20, 102]
 It took: 73797 "randomizations": [2, 3, 4, 5, 10, 17, 20, 102]
 ```
 
-![Haha bogo](https://img.ifunny.co/images/81b86ba267b2d400621b09125f753a0a12c30f36da0174de4a427f4d8e3a620f_1.jpg "Bogo king")
+![Haha bogo](https://preview.redd.it/all-my-homies-use-bogosort-v0-ilnfldkc28ka1.jpg?auto=webp&s=c6df3a1d3d377f08324b8c5b87ef92caf008e5ff "Bogo king")
